@@ -12,10 +12,4 @@ import java.util.List;
 public class CategoryRepositoryTests {
     @Autowired
     private CategoryRepository repository;
-
-    @Test
-    public void getCategories(){
-        List<Category> list = repository.findAll(Sort.by("id").descending());
-        System.out.println(list);
-    }
 }

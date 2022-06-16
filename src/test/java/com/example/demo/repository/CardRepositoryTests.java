@@ -15,28 +15,4 @@ import java.util.stream.IntStream;
 public class CardRepositoryTests {
     @Autowired
     private CardRepository cardRepository;
-
-    @Test
-    public void insertTest(){
-        IntStream.rangeClosed(1,10).forEach(i->{
-            Card card = Card.builder()
-                    .id("card_no"+i)
-                    .name("card_name"+i).build();
-            System.out.println(card);
-
-            cardRepository.save(card);
-        });
-    }
-
-    @Test
-    public void selectTest(){
-        CardSearchDTO searchDTO = CardSearchDTO.builder()
-                .keyword("아구몬")
-                .level("7")
-                .build();
-
-        Page<Card> page = cardRepository.searchCard(searchDTO,PageRequest.of(0,12));
-        System.out.println(page.getContent());
-        System.out.println(page.getTotalPages());
-    }
 }
