@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Document</title>
+    <style>
+        .header{
+            z-index: 3;
+            position: fixed;
+            top:0;
+            width: 100vw;
+            height: 16vw;
+            max-height: 128px;
+            background: url(/images/titlebar.png) no-repeat center top;
+            background-size: auto 16vw;
+        }
+
+        .header_btn{
+            display: block;
+            position: fixed;
+            top: min(20px, 1.25vw);
+            right: min(10px, 1.25vw);
+            z-index: 2;
+            width: min(88px, 11vw);
+            height: min(88px, 11vw);
+            background: url(/images/titlebtn.png) no-repeat center top;
+            background-size: contain;
+        }
+
+        .header_img{
+            display: block;
+            top: min(40px, 5vw);
+            margin: 0 auto;
+            width: min(320px, 40vw);
+        }
+
+        body{
+            background: url(/images/background.png) fixed no-repeat top center;
+            background-size: cover;
+            font-size: 0px;
+            padding: 0;
+            margin: 0px;
+            padding-top: min(160px, 20vw);
+        }
+        .card_container{
+            max-width: 800px;
+        }
+
+        .card_container_wrapper{
+            max-width: 800px;
+            padding-top: 1%;
+            padding-bottom: 1%;
+            margin: 0px auto;
+            margin-top : min(5px, 0.625vw);
+            margin-bottom: min(5px, 0.625vw);
+        }
+
+        .card_container_wrapper img{
+            margin: 0px;
+            display: inline-block;
+            filter: drop-shadow(0 .375vw .875vw rgba(0,0,0,0.4));
+        }
+
+        .card_container_wrapper .cards{
+            width: 22%;
+            padding: 1%;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            margin: 0px;
+            margin-top : min(5px, 0.625vw);
+            margin-bottom: min(5px, 0.625vw);
+            display: inline-block;
+        }
+
+        .searchBox{
+            width: 93%;
+        }
+
+        .search{
+            display: inline-block;
+        }
+
+        .subtitle{
+            height: min(100px, 12.5vw);
+        }
+
+        .search_background{
+            position: relative;
+            margin-top: min(20px, 2.5vw);
+            background: url(/images/search_bg.png) no-repeat center;
+            background-size: cover;
+            width: min(697px, 87.125vw);
+            height: min(62px, 7.75vw);
+            filter: drop-shadow(min(12px, 1.5vw) min(12px, 1.5vw) 0 rgba(111,111,111,0.2));
+        }
+
+        .search_button{
+            position: absolute;
+            top:0px;
+            right:0px;
+            background: url(/images/search_btn.png) no-repeat right;
+            background-size: cover;
+            width: min(153px, 19.125vw);
+            height: min(62px, 7.75vw);
+        }
+
+        input{
+            border: 0px;
+        }
+
+        .search_input{
+            display: block;
+            position: absolute;
+            background: transparent;
+            border: 0px;
+            font-size: min(32px, 4vw);
+            width: min(488px, 61vw);
+            top: min(10.4px, 1.3vw);
+            left: min(50px, 6.25vw);
+        }
+
+        .search_input:focus{
+            outline: 0px;
+        }
+
+        .cards{
+            margin-top: min(50px, 6.25vw);
+        }
+
+        .pager_container{
+            margin-top: min(80px, 10vw);
+            margin-bottom: min(80px, 10vw);
+        }
+
+        .pager{
+            display: inline-block;
+            z-index: 1;
+            background: url(/images/pager.png) no-repeat top center;
+            background-size: contain;
+            width: min(96px, 12vw);
+            height: min(40px, 5vw);
+            font-size: min(24px, 3vw);
+            color: white;
+            font-weight: bold;
+            filter: drop-shadow(min(8px, 1vw) min(8px, 1vw) 0 rgba(111,111,111,0.2));
+        }
+
+        .checked{
+            transform: translateY(min(8px, 1vw));
+            filter: none;
+            color:yellow;
+        }
+
+        .footer{
+            margin-top: min(80px, 10vw);
+            background: url(/images/footer_background.png) no-repeat top center;
+            background-size: cover;
+            width: 100%;
+            height: min(480px, 60vw);
+        }
+
+        .popup{
+            background-color: rgba(0,0,0,0.5);
+            z-index: 3;
+            top:0px;
+            position:fixed;
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
+        }
+
+        .card_detail{
+            margin: auto;
+            margin-top: min(80px, 10vw);
+            position:relative;
+            background: url(/images/card_detail_background.png);
+            background-size: contain;
+            background-position: left top;
+            background-repeat: repeat-y;
+            width: min(640px, 80vw);
+            border-radius: 4%;
+            border: min(10px, 1.25vw) solid red;
+            filter: drop-shadow(0 .375vw .875vw rgba(0,0,0,0.4));
+        }
+
+        .popup_close_btn{
+            position:absolute;
+            top:max(-40px, -5vw);
+            right:max(-50px, -6.25vw);
+            width: min(185px, 23.125vw);
+            height: min(99px, 12.385vw);
+            background: url(/images/popup_close2.png) no-repeat;
+            background-size: contain;
+        }
+
+        .card_detail_container{
+            margin: min(30px, 3.75vw);
+            margin-bottom: min(80px, 10vw);
+        }
+
+        .card_detail_number{
+            color: grey;
+            font-weight: bold;
+            font-size: min(20px, 2.5vw);
+            margin-bottom: min(10px, 1.25vw);
+        }
+
+        .card_detail_name{
+            font-weight: bolder;
+            font-size: min(40px, 5vw);
+        }
+
+        .card_detail_image{
+            display: block;
+            margin: min(20px, 2.5vw) auto;
+            height: min(62.5vw, 500px);
+            filter: drop-shadow(0 .375vw .875vw rgba(0,0,0,0.4));
+        }
+
+        .card_detail_effect{
+            font-weight: bold;
+            font-size: min(25px, 3.125vw);
+            color: red;
+        }
+
+        .card_detail_effect_detail{
+            font-weight: bold;
+            font-size: min(20px, 2.5vw);
+            margin-top: min(10px, 1.25vw);
+            margin-bottom: min(40px, 5vw);
+        }
+
+        a {
+            color: inherit;
+            text-decoration-line : none;
+        }
+
+
+        .popup2{
+            background-color: rgba(0,0,0,0.5);
+            z-index: 3;
+            top:0px;
+            position:fixed;
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
+        }
+
+        .card_search_detail{
+            margin: auto;
+            margin-top: min(80px, 10vw);
+            position:relative;
+            background: url(/images/search_detail_bg.png);
+            background-size: cover;
+            background-position: left top;
+            background-repeat: repeat-y;
+            width: min(640px, 80vw);
+            border-radius: 4%;
+            border: min(10px, 1.25vw) solid rgb(43,190,206);
+            filter: drop-shadow(0 .375vw .875vw rgba(0,0,0,0.4));
+        }
+
+
+        .search_background2{
+            display: block;
+            margin: min(40px, 5vw);
+            margin-top: min(60px, 7.5vw);
+            margin-bottom: min(30px, 3.75vw);
+            background: url(/images/search_bg.png) no-repeat center;
+            background-size: contain;
+            width: min(500px, 62.5vw);
+            height: min(62px, 7.75vw);
+        }
+
+        .search_detail_btn{
+            position: fixed;
+            bottom: min(160px, 20vw);
+            right:0px;
+            width: min(184px, 23vw);
+        }
+
+        .search_detail_btn img{
+            width: 100%;
+        }
+
+        .search_button2{
+            position: relative;
+            top:0px;
+            right:0px;
+            background: url(/images/search_btn.png) no-repeat right;
+            background-size: cover;
+            width: min(153px, 19.125vw);
+            height: min(62px, 7.75vw);
+        }
+
+        .search_input2{
+            display: block;
+            position: relative;
+            background: transparent;
+            border: 0px;
+            font-size: min(25px, 3.125vw);
+            width: min(400px, 50vw);
+            top: min(15px, 1.875vw);
+            left: min(30px, 3.75vw);
+        }
+
+        .search_input2:focus{
+            outline: 0px;
+        }
+
+        .search_option{
+            display: block;
+            margin: min(40px, 5vw);
+            margin-top: min(10px, 1.25vw);
+            margin-bottom: min(10px, 1.25vw);
+            background: url(/images/search_detail_option.png) no-repeat center;
+            background-size: contain;
+            width: min(500px, 62.5vw);
+            height: min(62px, 7.75vw);
+        }
+
+        select{
+            font-weight: bold;
+            color: white;
+            border: 0px;
+            background-color: transparent;
+            position: relative;
+            top: min(12px, 1.5vw);
+            left: min(30px, 3.75vw);
+            width: 88%;
+            height: 60%;
+            font-size: min(20px, 2.5vw);
+        }
+
+        option{
+            font-size: min(20px, 2.5vw);
+            color: black;
+            font-weight: bold;
+            min-height: min(62px, 7.75vw);
+        }
+
+        select:focus{
+            outline: 0px;
+        }
+
+        .search_detail_submitbtn{
+            margin: min(20px, 2.5vw);
+            margin-top: min(40px, 5vw);
+            width: min(440px, 55vw);
+            height: min(80px, 10vw);
+            background: url(/images/search_detail_searchbtn.png) no-repeat center;
+            background-size: cover;
+        }
+
+    </style>
+</head>
+
+<body>
+<header class="header">
+    <img class="header_img" src="/images/titleimg.png">
+    <span class="header_btn"></span>
+</header>
+
+<center>
+    <img class="subtitle" src="/images/subtitle.png">
+</center>
+
+<center>
+    <div class="search_background">
+        <form action="" method="get" class="form-example">
+            <input type="text" name="keyword" class="search_input" placeholder="카드검색">
+            <input type="submit" class="search_button" value="">
+        </form>
+    </div>
+</center>
+
+<center class="pager_container">
+    <div class="pager" th:if="${result.prev}"
+         th:onclick="'location.href=\'' + @{/list(page = ${result.start-2},
+            keyword = ${searchdto.keyword},
+            kind = ${searchdto.kind},
+            color = ${searchdto.color},
+            level = ${searchdto.level},
+            category = ${searchdto.category}
+         )} +'\''">PREV</div>
+
+    <div th:class="'pager ' + ${result.page == page?'checked':''}" th:each="page: ${result.pageList}"
+         th:onclick="'location.href=\'' + @{/list(page = ${page-1},
+            keyword = ${searchdto.keyword},
+            kind = ${searchdto.kind},
+            color = ${searchdto.color},
+            level = ${searchdto.level},
+            category = ${searchdto.category}
+         )} +'\''">
+        [[${page}]]
+    </div>
+
+    <div class="pager" th:if="${result.next}"
+         th:onclick="'location.href=\'' + @{/list(page = ${result.end},
+            keyword = ${searchdto.keyword},
+            kind = ${searchdto.kind},
+            color = ${searchdto.color},
+            level = ${searchdto.level},
+            category = ${searchdto.category}
+         )} +'\''">NEXT</div>
+</center>
+
+
+<center class="card_container_wrapper" >
+    <div class="cards" th:each = "dto : ${result.dtoList}" th:id="${dto.id}">
+        <img width="100%" th:onclick="popupShow([[${dto.id}]])" class="card_img"
+             th:src="'https://digimoncard.com/images/cardlist/card/'+ ${dto.id} +'.png'">
+        <input class="card_no" type="hidden" th:value="${dto.id}">
+        <input class="card_name" type="hidden" th:value="${dto.name}">
+        <input class="card_effect1" type="hidden" th:value="${dto.effect1}">
+        <input class="card_effect2" type="hidden" th:value="${dto.effect2}">
+        <input class="card_effect3" type="hidden" th:value="${dto.effect3}">
+        <input class="card_color" type="hidden" th:value="${dto.color}">
+    </div>
+</center>
+
+<center class="pager_container">
+    <div class="pager" th:if="${result.prev}"
+         th:onclick="'location.href=\'' + @{/list(page = ${result.start-2},
+            keyword = ${searchdto.keyword},
+            kind = ${searchdto.kind},
+            color = ${searchdto.color},
+            level = ${searchdto.level},
+            category = ${searchdto.category}
+         )} +'\''">PREV</div>
+
+    <div th:class="'pager ' + ${result.page == page?'checked':''}" th:each="page: ${result.pageList}"
+         th:onclick="'location.href=\'' + @{/list(page = ${page -1},
+            keyword = ${searchdto.keyword},
+            kind = ${searchdto.kind},
+            color = ${searchdto.color},
+            level = ${searchdto.level},
+            category = ${searchdto.category}
+         )} +'\''">
+        [[${page}]]
+    </div>
+
+    <div class="pager" th:if="${result.next}"
+         th:onclick="'location.href=\'' + @{/list(page = ${result.end},
+            keyword = ${searchdto.keyword},
+            kind = ${searchdto.kind},
+            color = ${searchdto.color},
+            level = ${searchdto.level},
+            category = ${searchdto.category}
+         )} +'\''">NEXT</div>
+</center>
+
+<footer class="footer">
+
+</footer>
+
+<div class="popup" style="display: none;">
+    <div class="card_detail">
+        <div class="popup_close_btn" onclick="popupClose()"></div>
+        <div class="card_detail_container">
+            <div class="card_detail_number">BT1-0012</div>
+            <div class="card_detail_name">◆ 야가미 타이치2</div>
+            <img class="card_detail_image" src="https://en.digimoncard.com/images/cardlist/card/BT1-078_P1.png"></img>
+
+            <div class="card_detail_effect">◆ 효과</div>
+            <div class="card_detail_effect_detail">[자신의 턴] DP + 1000</div>
+
+            <div class="card_detail_effect">◆ 진화원 효과</div>
+            <div class="card_detail_effect_detail">-</div>
+
+            <div class="card_detail_effect">◆ 시큐리티 효과</div>
+            <div class="card_detail_effect_detail">[시큐리티] 코스트를 지불하지 않고 등장 시킨다.</div>
+        </div>
+
+
+    </div>
+</div>
+
+
+<div class="search_detail_btn" onclick="popupShow2()">
+    <img src="/images/search_detail_btn.png">
+</div>
+
+<div class="popup2" style="display: none;">
+    <div class="card_search_detail">
+        <div class="popup_close_btn" onclick="popupClose2()"></div>
+        <form>
+            <div class="search_background2">
+                <input name="keyword" class="search_input2" placeholder="카드검색">
+            </div>
+
+            <div class="search_option">
+                <select name="category" class="option">
+                    <option value>-</option>
+                    <option th:each="category: ${categories}" th:value="${category.cno}">
+                        [[${category.title}]]
+                    </option>
+                </select>
+            </div>
+            <div class="search_option">
+                <select name="kind" class="option">
+                    <option value>-</option>
+                    <option value="디지몬카드">디지몬카드</option>
+                    <option value="디지타마카드">디지몬타마카드</option>
+                    <option value="테이머카드">테이머카드</option>
+                    <option value="옵션카드">옵션카드</option>
+                </select>
+            </div>
+            <div class="search_option">
+                <select name="color" class="option">
+                    <option value>-</option>
+                    <option value="빨강">빨강</option>
+                    <option value="파랑">파랑</option>
+                    <option value="노랑">노랑</option>
+                    <option value="초록">초록</option>
+                    <option value="검정">검정</option>
+                    <option value="보라">보라</option>
+                    <option value="하양">하양</option>
+                </select>
+            </div>
+            <div class="search_option">
+                <select name="level" class="option">
+                    <option value>-</option>
+                    <option value="2">Lv.2</option>
+                    <option value="3">Lv.3</option>
+                    <option value="4">Lv.4</option>
+                    <option value="5">Lv.5</option>
+                    <option value="6">Lv.6</option>
+                    <option value="7">Lv.7</option>
+                </select>
+            </div>
+
+
+            <center>
+                <input type="submit" class="search_detail_submitbtn" value=""></div>
+            </center>
+        </form>
+    </div>
+</div>
+
+</body>
+
+<script>
+    var popup = document.getElementsByClassName("popup")[0];
+    var popup2 = document.getElementsByClassName("popup2")[0];
+
+    function popupClose(){
+        popup.style.display = 'none';
+    }
+
+    function popupShow(cardID){
+        if (popup.style.display == 'none'){
+            popup.style.display = 'block';
+            console.log("test");
+            setCardDetail(cardID);
+        }
+    }
+
+    function setCardDetail(cardID){
+        var card = document.getElementById(cardID);
+        let card_no = card.getElementsByClassName("card_no")[0].value;
+        let card_name = card.getElementsByClassName('card_name')[0].value;
+        let card_effect1 = card.getElementsByClassName('card_effect1')[0].value;
+        let card_effect2 = card.getElementsByClassName('card_effect2')[0].value;
+        let card_effect3 = card.getElementsByClassName('card_effect3')[0].value;
+        let card_img = card.getElementsByClassName('card_img')[0].src;
+        let card_color = card.getElementsByClassName('card_color')[0].value;
+
+        popup.getElementsByClassName("card_detail_number")[0].innerText = card_no
+        popup.getElementsByClassName("card_detail_name")[0].innerText = card_name;
+        popup.getElementsByClassName("card_detail_effect_detail")[0].innerHTML = card_effect1;
+        popup.getElementsByClassName("card_detail_effect_detail")[1].innerHTML = card_effect2;
+        popup.getElementsByClassName("card_detail_effect_detail")[2].innerHTML = card_effect3;
+        popup.getElementsByClassName("card_detail_image")[0].src = card_img;
+        popup.getElementsByClassName("card_detail")[0].style.borderColor = getCardColor(card_color);
+
+        for(let i=0;i<3;i++){
+            popup.getElementsByClassName("card_detail_effect")[i].style.color = getCardColor(card_color);
+        }
+    }
+
+    function getCardColor(color){
+        switch(color){
+            case "빨강":
+                return "rgb(213, 0, 0)";
+
+            case "파랑":
+                return "rgb(24, 159, 237)";
+
+            case "노랑":
+                return "rgb(240, 172, 9)";
+
+            case "초록":
+                return "rgb(0, 189, 151)";
+
+            case "검정":
+                return "rgb(0, 0, 0)";
+
+            case "보라":
+                return "rgb(117, 42, 230)";
+
+            case "하양":
+                return "rgb(153, 153, 153)";
+        }
+    }
+
+    function popupClose2(){
+        popup2.style.display = 'none';
+    }
+
+    function popupShow2(){
+        if (popup2.style.display == 'none'){
+            popup2.style.display = 'block';
+        }
+    }
+
+</script>
+
+</html>
